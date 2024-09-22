@@ -43,6 +43,9 @@ function ControlBar({genConfig, updateGenConfig, onSubmitGenAction}){
                 </label>
                 <button type="submit">Generate</button>
             </form>
+            <div>
+                {genConfig.hoveredCell?.index>=0?<p>Cell ({genConfig.hoveredCell.rowPos},{genConfig.hoveredCell.colPos}) hovered </p>:<p>Nothing hovered</p>}
+            </div>
         </>
     )
 }

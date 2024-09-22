@@ -1,41 +1,33 @@
 import './App.css';
 import Matrix from './components/matrix/Matrix';
 import ControlBar from './components/ControlBar/ControlBar';
-import { genGridData} from './utils/helper';
-import { useState, useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
+import { matrixDataReducer, initMatrixData } from './reducers/MatrixDataReducer';
+import matrixConfigReducer from './reducers/MatrixConfigReducer';
 
 // here import other dependencies
 
 const initGenConfig={nbRows:4,nbCols:4};
 
-function getColLabels(data){
-  const colLabels=[]
-  data.forEach((dataItem)=>{colLabels[dataItem.colPos]=dataItem.colLabel})
-  return colLabels;
-}
-function getRowLabels(data){
-  const rowLabels=[]
-  data.forEach((dataItem)=>{rowLabels[dataItem.rowPos]=dataItem.rowLabel})
-  return rowLabels;
-}
-function getMatrixData(nbRows,nbCols){
-  const genData = genGridData(nbRows,nbCols);
-  const rowLabels = getRowLabels(genData)
-  const colLabels = getColLabels(genData)
-  return {genData,rowLabels,colLabels};
-}
-
-const initMatrixData = getMatrixData(initGenConfig.nbRows,initGenConfig.nbCols);
-
 // a component is a piece of code which render a part of the user interface
 function App() {
-  const [genConfig,setGenConfig] = useState(initGenConfig);
+  const [genConfig,configDispatch] = useReducer(matrixConfigReducer,initGenConfig)
+  const updateGenConfig = function(newGenConfig){
+    configDispatch({ ...newGenConfig, type:'updateNbRowsAndCols' });
+  }
 
-  const [matrixData,setMatrixData] = useState(initMatrixData);
+  const [matrixData,matrixDataDispatch] = useReducer(matrixDataReducer, initMatrixData);
+
+  const handleCellSelection = function(cellData){
+    matrixDataDispatch({type:'updateSelectedItem',cellData})
+  }
+
+  const handleCellHovered = function(cellData){
+    configDispatch({type:"updateHoveredCell", hoveredCell:cellData})
+  }
 
   const generateAndStoreNewData = function(newGenConfig){
-    const newMatrixData = getMatrixData(newGenConfig.nbRows,newGenConfig.nbCols)
-    setMatrixData(newMatrixData);
+    matrixDataDispatch({ ...newGenConfig, type:"generate" })
   }
 
   useEffect(()=>{
@@ -46,10 +38,10 @@ function App() {
     <div className="App">
         {console.log("App rendering")}
         <div id="control-bar-container">
-          <ControlBar genConfig={genConfig} updateGenConfig={setGenConfig} onSubmitGenAction={generateAndStoreNewData}/>
+          <ControlBar genConfig={genConfig} updateGenConfig={updateGenConfig} onSubmitGenAction={generateAndStoreNewData}/>
         </div>  
         <div id="view-container">
-          <Matrix matrixData={matrixData}/>
+          <Matrix matrixData={matrixData} handleCellSelection={handleCellSelection} handleCellHovered={handleCellHovered}/>
         </div>
     </div>
   );
