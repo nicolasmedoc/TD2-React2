@@ -1,6 +1,8 @@
 import './Matrix.css'
 import { getDefaultFontSize,getYlGnBu} from '../../utils/helper';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
+import { MatrixConfigDispatchContext } from '../../reducers/MatrixConfigContext';
+import { MatrixDataContext, MatrixDataDispatchContext } from '../../reducers/MatrixDataContext';
 
 const cellSize= 34;
 const radius = cellSize / 2;
@@ -10,15 +12,18 @@ const margin={left:100,top:100}
 const marginLabelsToMatrix=5;
 
 
-function Cell({cellData, sizeValue, colorValue, handleCellSelection, handleCellHovered}){
+function Cell({cellData, sizeValue, colorValue}){
+    const dataDispatch = useContext(MatrixDataDispatchContext)
+    const configDispatch = useContext(MatrixConfigDispatchContext)
+
     const handleOnClick = function(){
-        handleCellSelection(cellData)
+        dataDispatch({type:"updateSelectedItem", cellData})
     }
     const handleOnMouseEnter = function(){
-        handleCellHovered(cellData)
+        configDispatch({type:"updateHoveredCell", hoveredCell:cellData})
     }
     const handleOnMouseLeave = function(){
-        handleCellHovered({})
+        configDispatch({type:"updateHoveredCell", hoveredCell:{}})
     }
     const transformStr="translate("+(cellData.colPos*cellSize)+", "+(cellData.rowPos*cellSize)+")"
     const color = colorsYlGnBu[Math.floor(colorValue*colorsYlGnBu.length)]
@@ -50,7 +55,8 @@ function ColLabel({colPos,colLabel}){
     )
 }
 
-function Matrix({matrixData, handleCellSelection, handleCellHovered}){
+function Matrix(){
+    const matrixData = useContext(MatrixDataContext);
     const renderMatrix = function(){
         let minNbProductSold = Number.POSITIVE_INFINITY
         let maxNbProductSold = Number.NEGATIVE_INFINITY
@@ -64,8 +70,6 @@ function Matrix({matrixData, handleCellSelection, handleCellHovered}){
                 cellData={cellData}
                 sizeValue={(cellData.nbProductSold-minNbProductSold)/(maxNbProductSold-minNbProductSold)}
                 colorValue={cellData.salesGrowth}
-                handleCellSelection={handleCellSelection}
-                handleCellHovered={handleCellHovered}
                 />
         })
     }

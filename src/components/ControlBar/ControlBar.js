@@ -1,15 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { MatrixConfigContext, MatrixConfigDispatchContext } from "../../reducers/MatrixConfigContext";
+import { MatrixDataDispatchContext } from "../../reducers/MatrixDataContext";
 
-function ControlBar({genConfig, updateGenConfig, onSubmitGenAction}){
+function ControlBar(){
+    const genConfig = useContext(MatrixConfigContext);
+    const configDispatch = useContext(MatrixConfigDispatchContext);
+    const dataDispatch = useContext(MatrixDataDispatchContext);
 
     const handleOnChangeNbRows = function(event){
         const nbRows = parseInt(event.target.value);
-        updateGenConfig({ ...genConfig, nbRows })
+        configDispatch({...genConfig, nbRows, type:"updateNbRowsAndCols"})
     }
 
     const handleOnChangeNbCols = function(event){
         const nbCols = parseInt(event.target.value);
-        updateGenConfig({ ...genConfig, nbCols })
+        configDispatch({...genConfig, nbCols, type:"updateNbRowsAndCols"})
     }
 
     const handleOnSubmit = function(event){
@@ -21,7 +26,7 @@ function ControlBar({genConfig, updateGenConfig, onSubmitGenAction}){
         const formData = new FormData(form);
         const formJSON = Object.fromEntries(formData.entries());
     
-        onSubmitGenAction(formJSON);
+        dataDispatch({type:"generate", nbRows: parseInt(formJSON.nbRows), nbCols: parseInt(formJSON.nbCols)})
     }
     
     useEffect(()=>{

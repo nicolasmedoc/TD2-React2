@@ -1,6 +1,25 @@
+import { createContext, useReducer } from "react";
 import { genGridData } from "../utils/helper";
 
-export function matrixDataReducer(matrixData, action){
+export const MatrixDataContext = createContext(null);
+export const MatrixDataDispatchContext = createContext(null);
+
+export function MatrixDataContextProvider({children}){
+    const [genData, dispatch] = useReducer(
+        matrixDataReducer,
+        initMatrixData
+      );
+    
+    return(
+        <MatrixDataContext.Provider value={genData}>
+            <MatrixDataDispatchContext.Provider value={dispatch}>
+                {children}
+            </MatrixDataDispatchContext.Provider>
+        </MatrixDataContext.Provider>
+    )
+};
+
+function matrixDataReducer(matrixData, action){
     switch (action.type) {
         case 'generate': {
           return generateNewData(action.nbRows,action.nbCols);
@@ -40,4 +59,4 @@ function generateNewData(nbRows,nbCols){
     const initGenData = genGridData(nbRows,nbCols);
     return {genData:initGenData, rowLabels: getRowLabels(initGenData), colLabels:getColLabels(initGenData)}
 }
-export const initMatrixData = generateNewData(4,4);
+const initMatrixData = generateNewData(4,4);
