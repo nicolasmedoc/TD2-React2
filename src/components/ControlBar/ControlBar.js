@@ -1,17 +1,15 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
-function ControlBar({initGenConfig, onSubmitGenAction}){
-
-    const [genConfig,setGenConfig] = useState(initGenConfig);
+function ControlBar({genConfig, updateGenConfig, onSubmitGenAction}){
 
     const handleOnChangeNbRows = function(event){
         const nbRows = parseInt(event.target.value);
-        setGenConfig({ ...genConfig, nbRows });
+        updateGenConfig({ ...genConfig, nbRows })
     }
 
     const handleOnChangeNbCols = function(event){
         const nbCols = parseInt(event.target.value);
-        setGenConfig({ ...genConfig, nbCols })
+        updateGenConfig({ ...genConfig, nbCols })
     }
 
     const handleOnSubmit = function(event){

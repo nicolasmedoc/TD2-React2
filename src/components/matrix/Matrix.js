@@ -39,16 +39,16 @@ function ColLabel({colPos,colLabel}){
     )
 }
 
-function Matrix({matrixData, colLabels, rowLabels}){
+function Matrix({matrixData}){
     const renderMatrix = function(){
         let minNbProductSold = Number.POSITIVE_INFINITY
         let maxNbProductSold = Number.NEGATIVE_INFINITY
-        matrixData.forEach(cellData=>{
+        matrixData.genData.forEach(cellData=>{
             if(cellData.nbProductSold<minNbProductSold)minNbProductSold=cellData.nbProductSold;
             if(cellData.nbProductSold>maxNbProductSold)maxNbProductSold=cellData.nbProductSold;
         });
 
-        return matrixData.map(cellData=>{
+        return matrixData.genData.map(cellData=>{
             return <Cell key={(cellData.index)}
                 cellData={cellData}
                 sizeValue={(cellData.nbProductSold-minNbProductSold)/(maxNbProductSold-minNbProductSold)}
@@ -57,14 +57,14 @@ function Matrix({matrixData, colLabels, rowLabels}){
         })
     }
     const renderColLabels = function(){
-        return colLabels.map((colLabel,i)=>{
+        return matrixData.colLabels.map((colLabel,i)=>{
             return (
                 <ColLabel key={colLabel} colPos={i} colLabel={colLabel}></ColLabel>
             )
         })
     }
     const renderRowLabels = function(){
-        return rowLabels.map((rowLabel,i)=>{
+        return matrixData.rowLabels.map((rowLabel,i)=>{
             return (
                 <RowLabel key={rowLabel} rowPos={i} rowLabel={rowLabel}></RowLabel>
             )

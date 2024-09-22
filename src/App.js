@@ -1,36 +1,41 @@
 import './App.css';
 import Matrix from './components/matrix/Matrix';
 import ControlBar from './components/ControlBar/ControlBar';
-import { genGridData } from './utils/helper';
+import { genGridData} from './utils/helper';
 import { useState, useEffect } from 'react';
 
 // here import other dependencies
 
 const initGenConfig={nbRows:4,nbCols:4};
-const initGenData = genGridData(initGenConfig.nbRows,initGenConfig.nbCols);
+
+function getColLabels(data){
+  const colLabels=[]
+  data.forEach((dataItem)=>{colLabels[dataItem.colPos]=dataItem.colLabel})
+  return colLabels;
+}
+function getRowLabels(data){
+  const rowLabels=[]
+  data.forEach((dataItem)=>{rowLabels[dataItem.rowPos]=dataItem.rowLabel})
+  return rowLabels;
+}
+function getMatrixData(nbRows,nbCols){
+  const genData = genGridData(nbRows,nbCols);
+  const rowLabels = getRowLabels(genData)
+  const colLabels = getColLabels(genData)
+  return {genData,rowLabels,colLabels};
+}
+
+const initMatrixData = getMatrixData(initGenConfig.nbRows,initGenConfig.nbCols);
 
 // a component is a piece of code which render a part of the user interface
 function App() {
-  const [genData,setGenData] = useState(initGenData);
-  function getColLabels(data){
-    const colLabels=[]
-    data.forEach((dataItem)=>{colLabels[dataItem.colPos]=dataItem.colLabel})
-    return colLabels;
-  }
-  const [colLabels,setColLabels] = useState(getColLabels(genData))
-  
-  function getRowLabels(data){
-    const rowLabels=[]
-    data.forEach((dataItem)=>{rowLabels[dataItem.rowPos]=dataItem.rowLabel})
-    return rowLabels;
-  }
-  const [rowLabels,setRowLabels] = useState(getRowLabels(genData))
+  const [genConfig,setGenConfig] = useState(initGenConfig);
+
+  const [matrixData,setMatrixData] = useState(initMatrixData);
 
   const generateAndStoreNewData = function(newGenConfig){
-    const newGenData = genGridData(newGenConfig.nbRows,newGenConfig.nbCols)
-    setGenData(newGenData)
-    setColLabels(getColLabels(newGenData))
-    setRowLabels(getRowLabels(newGenData))
+    const newMatrixData = getMatrixData(newGenConfig.nbRows,newGenConfig.nbCols)
+    setMatrixData(newMatrixData);
   }
 
   useEffect(()=>{
@@ -41,10 +46,10 @@ function App() {
     <div className="App">
         {console.log("App rendering")}
         <div id="control-bar-container">
-          <ControlBar initGenConfig={initGenConfig} onSubmitGenAction={generateAndStoreNewData}/>
+          <ControlBar genConfig={genConfig} updateGenConfig={setGenConfig} onSubmitGenAction={generateAndStoreNewData}/>
         </div>  
         <div id="view-container">
-          <Matrix matrixData={genData} colLabels={colLabels} rowLabels={rowLabels}/>
+          <Matrix matrixData={matrixData}/>
         </div>
     </div>
   );
