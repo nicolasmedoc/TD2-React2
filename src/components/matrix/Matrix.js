@@ -1,12 +1,17 @@
 import './Matrix.css'
 import { getDefaultFontSize,getYlGnBu} from '../../utils/helper';
+import { useEffect } from 'react';
 
 const cellSize= 34;
 const radius = cellSize / 2;
+const colorsYlGnBu = getYlGnBu();
+const fontSize=getDefaultFontSize()
+const margin={left:100,top:100}
+const marginLabelsToMatrix=5;
+
 
 function Cell({cellData, sizeValue, colorValue}){
     const transformStr="translate("+(cellData.colPos*cellSize)+", "+(cellData.rowPos*cellSize)+")"
-    const colorsYlGnBu = getYlGnBu();
     const color = colorsYlGnBu[Math.floor(colorValue*colorsYlGnBu.length)]
     return(
         <g transform={transformStr}>
@@ -17,7 +22,6 @@ function Cell({cellData, sizeValue, colorValue}){
 }
 
 function RowLabel({rowPos,rowLabel}){
-    const fontSize=getDefaultFontSize()
     const transformStr='translate(0,'+(cellSize*(rowPos) + cellSize/2 + fontSize/2)+')'
     return(
         <g transform={transformStr}>
@@ -35,7 +39,7 @@ function ColLabel({colPos,colLabel}){
     )
 }
 
-function Matrix({matrixData,genConfig, colLabels, rowLabels}){
+function Matrix({matrixData, colLabels, rowLabels}){
     const renderMatrix = function(){
         let minNbProductSold = Number.POSITIVE_INFINITY
         let maxNbProductSold = Number.NEGATIVE_INFINITY
@@ -55,21 +59,25 @@ function Matrix({matrixData,genConfig, colLabels, rowLabels}){
     const renderColLabels = function(){
         return colLabels.map((colLabel,i)=>{
             return (
-                <ColLabel key={i} colPos={i} colLabel={colLabel}></ColLabel>
+                <ColLabel key={colLabel} colPos={i} colLabel={colLabel}></ColLabel>
             )
         })
     }
     const renderRowLabels = function(){
         return rowLabels.map((rowLabel,i)=>{
             return (
-                <RowLabel key={i} rowPos={i} rowLabel={rowLabel}></RowLabel>
+                <RowLabel key={rowLabel} rowPos={i} rowLabel={rowLabel}></RowLabel>
             )
         })
     }
-    const margin={left:100,top:100}
-    const marginLabelsToMatrix=5;
+    
+    useEffect(()=>{
+        console.log("Matrix useEffect");
+    });
+
     return(
         <svg className="MatrixSVG" width="100%" height="100%" >
+            {console.log("Matrix rendering")}
             <g transform={'translate('+(margin.left-marginLabelsToMatrix)+','+(margin.top)+')'}>
                 {renderRowLabels()}
             </g>

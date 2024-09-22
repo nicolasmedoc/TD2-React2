@@ -1,4 +1,19 @@
-function ControlBar({genConfig,onSubmitGenAction}){
+import { useState, useEffect } from "react";
+
+function ControlBar({initGenConfig, onSubmitGenAction}){
+
+    const [genConfig,setGenConfig] = useState(initGenConfig);
+
+    const handleOnChangeNbRows = function(event){
+        const nbRows = parseInt(event.target.value);
+        setGenConfig({ ...genConfig, nbRows });
+    }
+
+    const handleOnChangeNbCols = function(event){
+        const nbCols = parseInt(event.target.value);
+        setGenConfig({ ...genConfig, nbCols })
+    }
+
     const handleOnSubmit = function(event){
         // Prevent the browser from reloading the page
         event.preventDefault();
@@ -11,17 +26,22 @@ function ControlBar({genConfig,onSubmitGenAction}){
         onSubmitGenAction(formJSON);
     }
     
+    useEffect(()=>{
+        console.log("ControlBar useEffect")
+    });
+
     return(
         <>
+            {console.log("ControlBar rendering")}
             <form onSubmit={handleOnSubmit}>
                 <label>
                     Nb rows
-                    <input name="nbRows" defaultValue = {genConfig.nbRows}/>
+                    <input name="nbRows" value = {genConfig.nbRows} onChange={handleOnChangeNbRows}/>
                 </label>
 
                 <label>
                     Nb columns
-                    <input name="nbCols" defaultValue = {genConfig.nbCols}/>
+                    <input name="nbCols" value = {genConfig.nbCols} onChange={handleOnChangeNbCols}/>
                 </label>
                 <button type="submit">Generate</button>
             </form>

@@ -10,6 +10,7 @@ function generateValue(typeGen,i){
     return effectiveValue;
 }
 export function genGridData(nbRows, nbColumns, typeGen="random-int", typeGen2="random"){
+    console.log("helper.genGridData()")
     const valuesArr = []
     for(let i=0;i<nbRows*nbColumns;i++){
         let nbProductSold=generateValue(typeGen,i);

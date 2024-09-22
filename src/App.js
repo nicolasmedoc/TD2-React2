@@ -2,14 +2,15 @@ import './App.css';
 import Matrix from './components/matrix/Matrix';
 import ControlBar from './components/ControlBar/ControlBar';
 import { genGridData } from './utils/helper';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // here import other dependencies
 
+const initGenConfig={nbRows:4,nbCols:4};
+const initGenData = genGridData(initGenConfig.nbRows,initGenConfig.nbCols);
+
 // a component is a piece of code which render a part of the user interface
 function App() {
-  const [genConfig,setGenConfig] = useState({nbRows:4,nbCols:4});
-  const initGenData = genGridData(genConfig.nbRows,genConfig.nbCols);
   const [genData,setGenData] = useState(initGenData);
   function getColLabels(data){
     const colLabels=[]
@@ -17,26 +18,33 @@ function App() {
     return colLabels;
   }
   const [colLabels,setColLabels] = useState(getColLabels(genData))
+  
   function getRowLabels(data){
     const rowLabels=[]
     data.forEach((dataItem)=>{rowLabels[dataItem.rowPos]=dataItem.rowLabel})
     return rowLabels;
   }
   const [rowLabels,setRowLabels] = useState(getRowLabels(genData))
-  const updateGenConfigAndGenerate = function(newGenConfig){
-    setGenConfig(newGenConfig);
+
+  const generateAndStoreNewData = function(newGenConfig){
     const newGenData = genGridData(newGenConfig.nbRows,newGenConfig.nbCols)
     setGenData(newGenData)
     setColLabels(getColLabels(newGenData))
     setRowLabels(getRowLabels(newGenData))
   }
+
+  useEffect(()=>{
+    console.log("App useEffect");
+  })
+
   return (
     <div className="App">
+        {console.log("App rendering")}
         <div id="control-bar-container">
-          <ControlBar genConfig={genConfig} onSubmitGenAction={updateGenConfigAndGenerate}/>
+          <ControlBar initGenConfig={initGenConfig} onSubmitGenAction={generateAndStoreNewData}/>
         </div>  
         <div id="view-container">
-          <Matrix matrixData={genData} genConfig={genConfig} colLabels={colLabels} rowLabels={rowLabels}/>
+          <Matrix matrixData={genData} colLabels={colLabels} rowLabels={rowLabels}/>
         </div>
     </div>
   );
