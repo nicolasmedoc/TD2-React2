@@ -27,7 +27,7 @@ function App() {
             </div>
         </div>
       </MatrixDataContextProvider>
-  </MatrixConfigContextProvider>
+    </MatrixConfigContextProvider>
   );
 }
 
