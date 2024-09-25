@@ -1,15 +1,19 @@
 import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { generateByGenConfig } from "../../redux/MatrixSlice";
+import { updateNbRowsAndCols } from "../../redux/ConfigSlice";
 
-function ControlBar({genConfig, updateGenConfig, onSubmitGenAction}){
-
+function ControlBar(){
+    const dispatch = useDispatch();
+    const genConfig = useSelector(state=>state.config);
     const handleOnChangeNbRows = function(event){
         const nbRows = parseInt(event.target.value);
-        updateGenConfig({ ...genConfig, nbRows })
+        dispatch(updateNbRowsAndCols({ ...genConfig, nbRows }))
     }
 
     const handleOnChangeNbCols = function(event){
         const nbCols = parseInt(event.target.value);
-        updateGenConfig({ ...genConfig, nbCols })
+        dispatch(updateNbRowsAndCols({ ...genConfig, nbCols }))
     }
 
     const handleOnSubmit = function(event){
@@ -20,8 +24,8 @@ function ControlBar({genConfig, updateGenConfig, onSubmitGenAction}){
         const form = event.target;
         const formData = new FormData(form);
         const formJSON = Object.fromEntries(formData.entries());
-    
-        onSubmitGenAction(formJSON);
+
+        dispatch(generateByGenConfig({nbRows:parseInt(formJSON.nbRows), nbCols:parseInt(formJSON.nbCols)}));
     }
     
     useEffect(()=>{
