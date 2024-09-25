@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 
 // here import other dependencies
 
-const initGenConfig={nbRows:4,nbCols:4};
+const initGenConfig={nbRows:4, nbCols:4, hoveredCell:{}};
 
 function getColLabels(data){
   const colLabels=[]
@@ -44,6 +44,10 @@ function App() {
     setMatrixData({...matrixData,genData:newGenData});
   }
 
+  const handleCellHovered = function(cellData){
+    setGenConfig({...genConfig, hoveredCell:cellData})
+  }
+
   const generateAndStoreNewData = function(newGenConfig){
     const newMatrixData = getMatrixData(newGenConfig.nbRows,newGenConfig.nbCols)
     setMatrixData(newMatrixData);
@@ -60,7 +64,7 @@ function App() {
           <ControlBar genConfig={genConfig} updateGenConfig={setGenConfig} onSubmitGenAction={generateAndStoreNewData}/>
         </div>  
         <div id="view-container">
-          <Matrix matrixData={matrixData} handleCellSelection={handleCellSelection}/>
+          <Matrix matrixData={matrixData} handleCellSelection={handleCellSelection} handleCellHovered={handleCellHovered}/>
         </div>
     </div>
   );
