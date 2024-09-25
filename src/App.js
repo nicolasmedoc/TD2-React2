@@ -33,6 +33,17 @@ function App() {
 
   const [matrixData,setMatrixData] = useState(initMatrixData);
 
+  const handleCellSelection = function(selectedCellData){
+    const newGenData = matrixData.genData.map(cellData=>{
+      if(cellData.index === selectedCellData.index){
+        return {...cellData, selected:!cellData.selected};
+      }else{
+        return cellData;
+      }
+    });
+    setMatrixData({...matrixData,genData:newGenData});
+  }
+
   const generateAndStoreNewData = function(newGenConfig){
     const newMatrixData = getMatrixData(newGenConfig.nbRows,newGenConfig.nbCols)
     setMatrixData(newMatrixData);
@@ -49,7 +60,7 @@ function App() {
           <ControlBar genConfig={genConfig} updateGenConfig={setGenConfig} onSubmitGenAction={generateAndStoreNewData}/>
         </div>  
         <div id="view-container">
-          <Matrix matrixData={matrixData}/>
+          <Matrix matrixData={matrixData} handleCellSelection={handleCellSelection}/>
         </div>
     </div>
   );

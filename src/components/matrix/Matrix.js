@@ -10,13 +10,18 @@ const margin={left:100,top:100}
 const marginLabelsToMatrix=5;
 
 
-function Cell({cellData, sizeValue, colorValue}){
+function Cell({cellData, sizeValue, colorValue, handleCellSelection}){
+    const handleOnClick=function(){
+        handleCellSelection(cellData);
+    }
     const transformStr="translate("+(cellData.colPos*cellSize)+", "+(cellData.rowPos*cellSize)+")"
     const color = colorsYlGnBu[Math.floor(colorValue*colorsYlGnBu.length)]
+    const stroke="red"
+    const strokeWidth = cellData.selected?2:0;
     return(
-        <g transform={transformStr}>
+        <g transform={transformStr} onClick={handleOnClick}>
             <rect className="CellRect" width={cellSize-1} height={cellSize-1} fill="lightgray"/>
-            <circle cx={radius} cy={radius} r={Math.max(2,radius*sizeValue)} fill={color} />
+            <circle cx={radius} cy={radius} r={Math.max(2,radius*sizeValue)} fill={color} stroke={stroke} strokeWidth={strokeWidth}/>
         </g>
     )
 }
@@ -39,7 +44,7 @@ function ColLabel({colPos,colLabel}){
     )
 }
 
-function Matrix({matrixData}){
+function Matrix({matrixData,handleCellSelection}){
     const renderMatrix = function(){
         let minNbProductSold = Number.POSITIVE_INFINITY
         let maxNbProductSold = Number.NEGATIVE_INFINITY
@@ -53,6 +58,7 @@ function Matrix({matrixData}){
                 cellData={cellData}
                 sizeValue={(cellData.nbProductSold-minNbProductSold)/(maxNbProductSold-minNbProductSold)}
                 colorValue={cellData.salesGrowth}
+                handleCellSelection={handleCellSelection}
                 />
         })
     }
